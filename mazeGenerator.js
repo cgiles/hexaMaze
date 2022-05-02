@@ -98,7 +98,7 @@ class MazeGenerator {
                         }
                         this.generated = true;
                         break;
-                    case KindOfMaze.DFPK:
+                    case KindOfMaze.BinaryTreeNO:
                         while (!this.isAllSameValues()) {
                             this.aHex = this.DFPK();
                         }
@@ -126,7 +126,7 @@ class MazeGenerator {
                             this.generated = true;
                         }
                         break;
-                    case KindOfMaze.DFPK:
+                    case KindOfMaze.BinaryTreeNO:
                         this.aHex = this.DFPK();
                 }
             }
@@ -320,7 +320,10 @@ class MazeGenerator {
         }
     }
 
-
+    BinaryTreeNO(){
+        let id=0;
+        
+    }
 
     exploreMaze() {
         if (!this.isExploring) {
@@ -464,7 +467,7 @@ class MazeGenerator {
 const KindOfMaze = {
     DepthFirstSearch: 0,
     Kruksal: 1,
-    DFPK: 2
+    BinaryTreeNO: 2
 }
 
 

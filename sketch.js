@@ -1,10 +1,10 @@
 
-"use strict";
 
 
 let aMaze
 let popo;
 let started = false;
+
 function setup() {
 
   createCanvas(windowWidth, windowHeight);
@@ -26,21 +26,24 @@ function setup() {
   createMaze()
   colorMode(HSB, aMaze.nbCells, 255, 255);
   popo = baseOption;
-  popo.numberIsValue = false;
+  popo.numberIsValue = true;
   popo.instant = false;
   popo.showNumber = true;
   popo.showSolution = true;
   popo.showBG=true;
+  console.log(popo.showNumber);
   createPane();
 }
 
 function draw() {
+
   background(255);
  popo.numberIsValue=guiValues.kindOfMaze==1?true:false;
+
   aMaze.generateMaze();
   //popo.showSolution = guiValues.showSolution;
   popo.showNumber=guiValues.showNumber;
-  aMaze.renderMaze(popo);//{numberIsValue:!aMaze.isExploring,showNumber:true,drawIfUnvisited:true,showBG:true,});
+  aMaze.renderMaze({numberIsValue:!aMaze.isExploring,showNumber:guiValues.displayNumber,drawIfUnvisited:true,showBG:true,});
   text(aMaze.unvisitedHexs.length+" "+floor(frameRate()), 10, 10);
   //if(aMaze.generated)console.log("Generated");
   
@@ -68,23 +71,7 @@ function removeHexFromArray(hex, hexs = []) {
 }
 
 
-/*function instantCheckboxEvent() {
-  if (instantCheckbox.checked()) {
-    instantSolving = true;
-  } else {
-    instantSolving = false;
-  }
-  console.log(instantSolving);
-  aHex = new Hex(hSize, { s: 0, q: 0, r: 0 });
-  aHex.wasVisited = true;
-  cells = [];
-  cells = generateHexs(hSize, 10);
 
-  startHexIndex = getHexIndex(aHex, cells);
-
-  cells[startHexIndex].hue = rainbow ? hue : 180;
-}
-*/
 let baseOption = { numberIsValue: false, showBG: false, drawIfUnvisited: true, showNumber: false };
 
 
