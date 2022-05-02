@@ -30,30 +30,31 @@ class Hex {
         this.hue = 0;
     }
 
-    show(options={showBG:false,rainbowColor:true,drawIfUnvisited:true,showNumber:false,numberIsValue:true}) {
-        if (this.wasVisited||options.drawIfUnvisited) {
+    show(options = { showBG: false, rainbowColor: true, drawIfUnvisited: true, showNumber: false, numberIsValue: true }) {
+
+        if (this.wasVisited || options.drawIfUnvisited) {
             push();
 
             translate(this.x, this.y);
             //draw background
-            
-            if(options.showBG){
-            noStroke();
-            if (options.rainbowColor) fill(this.hue%360,190,190);
-            else fill(255,0,0);
-            beginShape();
-            for (let i = 0; i < 6; i++) {
-                let a = this.angle * i - this.angle / 2;
 
-                let xP = cos(a) * this.size;
-                let yP = sin(a) * this.size;
-                vertex(xP, yP);
+            if (options.showBG) {
+                noStroke();
+                if (options.rainbowColor) fill(this.hue % 360, 190, 190);
+                else fill(255, 0, 0);
+                beginShape();
+                for (let i = 0; i < 6; i++) {
+                    let a = this.angle * i - this.angle / 2;
+
+                    let xP = cos(a) * this.size;
+                    let yP = sin(a) * this.size;
+                    vertex(xP, yP);
 
 
 
+                }
+                endShape(CLOSE);
             }
-            endShape(CLOSE);
-        }
             //draw sides
             stroke(0);
             for (let i = 0; i < 6; i++) {
@@ -82,10 +83,10 @@ class Hex {
                 circle(xP, yP, this.size / 4);
                 pop();
             }
-            if(options.showNumber){
-            fill(0);
-            textAlign(CENTER,CENTER);
-            text(options.numberIsValue?this.value:this.distance,0,0);
+            if (options.showNumber) {
+                fill(0);
+                textAlign(CENTER, CENTER);
+                text(options.numberIsValue ? this.value : this.distance, 0, 0);
             }
             pop();
         }
@@ -94,16 +95,16 @@ class Hex {
         let neighbors = [];
         for (let i = 0; i < this.direction.length; i++) {
             let aHex = addHex(new Hex(0, this.coord), new Hex(0, this.direction[i]));
-           
+
             let foundHex = hexs.find(element => compareHex(element, aHex));
             neighbors.push(foundHex);
         }
-      
+
         return neighbors;
     }
     getUnvisitedNeighbors(hexs = []) {
         let neighbors = this.getNeighbors(hexs);
-       
+
         let unvisitedNeighbors = [];
         for (let i = 0; i < neighbors.length; i++) {
             if (neighbors[i] != undefined) {
@@ -117,7 +118,7 @@ class Hex {
     }
     getVisitedNeighbors(hexs = []) {
         let neighbors = this.getNeighbors(hexs);
-        
+
         let visitedNeighbors = [];
         for (let i = 0; i < neighbors.length; i++) {
             if (neighbors[i] != undefined) {
@@ -126,7 +127,7 @@ class Hex {
                 }
             }
         }
-        
+
         return visitedNeighbors;
     }
     getDifferentNeighbor(hexs = []) {
@@ -145,12 +146,12 @@ class Hex {
         }
 
     }
-    getOpenUnvisitedNeighbors(hexs=[]){
-        let openNeighbors=[];
-        let neighbors=this.getNeighbors(hexs);
-        for(let i=0;i<neighbors.length;i++){
-            if(this.sideOpen[i]){
-                if(!neighbors[i].wasVisited){
+    getOpenUnvisitedNeighbors(hexs = []) {
+        let openNeighbors = [];
+        let neighbors = this.getNeighbors(hexs);
+        for (let i = 0; i < neighbors.length; i++) {
+            if (this.sideOpen[i]) {
+                if (!neighbors[i].wasVisited) {
                     openNeighbors.push(neighbors[i]);
                 }
             }
@@ -169,14 +170,20 @@ class Hex {
     beenVisited() {
         return this.wasVisited;
     }
-    isDeadEnd(){
-        let nbOpenSide=0;
-        for(let i=0;i<this.sideOpen.length;i++){
-            if(this.sideOpen[i])nbOpenSide++;
-            
+    isDeadEnd() {
+        let nbOpenSide = 0;
+        for (let i = 0; i < this.sideOpen.length; i++) {
+            if (this.sideOpen[i]) nbOpenSide++;
+
         }
-        if(nbOpenSide>1)return false;
+        if (nbOpenSide > 1) return false;
         else return true;
+    }
+    isInsideHex(px,py){
+        let dx=abs(px-this.x)/this.r;
+        let dy=abs(py-this.y)/this.r;
+        let a=0.25*sqrt(3.0);
+        return (dy<=a)&&(a*dx+0.25*dy<0.5*a);
     }
 }
 function addHex(a, b) {
@@ -194,7 +201,7 @@ function generateHexs(size, map_radius = 0) {
         let r1 = max(-map_radius, -q - map_radius);
         let r2 = min(map_radius, -q + map_radius);
         for (let r = r1; r <= r2; r++) {
-            
+
 
             hexs.push(new Hex(size, { s: q, q: r, r: -q - r }));
         }
@@ -211,4 +218,10 @@ function findHexsWithSameValue(value, hexs = []) {
     let hexsSameValue = []
     hexsSameValue = hexs.filter(element => element.value == value);
     return hexsSameValue;
+}
+function findHexWithSameCoord(someCoord={s:0,q:0,r:0},hexs)
+{
+    let aHex;
+    aHex=hexs.find(element=>element.getCoord()==someCoord);
+    return aHex;
 }
